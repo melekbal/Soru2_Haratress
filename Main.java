@@ -17,7 +17,7 @@ public class Main {
         productManagement.addProduct(num);
 
         String criterion;
-        System.out.println("Ürünleri hangi kritere göre sıralamak istersiniz? (name / stock / rating)");
+        System.out.println("\nÜrünleri hangi kritere göre sıralamak istersiniz? (name / stock / rating)");
         do { 
             System.err.print("Seçilen Kriter: ");
             criterion = scanner.nextLine();
@@ -39,8 +39,9 @@ public class Main {
         } while ( !order.equals("artan") && !order.equals("azalan") );
 
 
-        System.err.println("Sıralanmış Ürünler:");
+        System.err.println("\nSıralanmış Ürünler:");
         productManagement.sortProducts(criterion, order);
-
+   
+        productManagement.addToCart();
     }
 }

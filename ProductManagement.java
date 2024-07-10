@@ -6,17 +6,19 @@ import java.util.Scanner;
 public class ProductManagement {
     private List<Products> products;
     private Scanner scanner;
+    private List<CartItem> cart;
 
     public ProductManagement() {
         this.products = new ArrayList<>();
         this.scanner = new Scanner(System.in);
         this.scanner.useLocale(Locale.US);
+        this.cart = new ArrayList<>();
 
     }
 
     public void addProduct(int num) {
         for(int i = 0; i < num; i++) {
-            System.out.println("Ürün " + (i + 1) + ":");
+            System.out.println("\nÜrün " + (i + 1) + ":");
 
             String name;
             do {
@@ -86,5 +88,75 @@ public class ProductManagement {
         for(Products product : products) {
             System.out.println(product.getName() + " - Fiyat: " + product.getPrice() + " ,  Stok: " + product.getStock() + " , Değerlendirme: " + product.getRating());
         }
+    }
+
+    public void addToCart() {
+        String answer;
+        int productsAdded = 0;
+
+        do {
+            System.out.println("\nSepete ürün eklemek ister misiniz? (E/H):");
+            answer = scanner.nextLine();
+
+            if (!answer.equals("E") && !answer.equals("H")) {
+                System.out.println("Geçersiz cevap girdiniz. Lütfen tekrar deneyiniz.");
+            } else if (answer.equals("E")) {
+                Products productToAdd = null;
+                while (productToAdd == null) {
+                    System.out.print("Eklemek istediğiniz ürünün adı: ");
+                    String productName = scanner.nextLine();
+    
+                    for (Products product : products) {
+                        if (product.getName().equalsIgnoreCase(productName)) {
+                            productToAdd = product;
+                            break;
+                        }
+                    }
+    
+                    if (productToAdd == null) {
+                        System.out.println("Ürün bulunamadı. Lütfen geçerli bir ürün adı giriniz.");
+                    }
+                }
+    
+                int quantity = 0;
+            while (true) {
+                System.out.print("Eklemek istediğiniz adet: ");
+                quantity = scanner.nextInt();
+                scanner.nextLine(); // Consume newline left-over
+
+                if (quantity <= 0) {
+                    System.out.println("Geçersiz adet girdiniz. Lütfen pozitif bir sayı giriniz.");
+                    continue;
+                } else if (quantity > productToAdd.getStock()) {
+                    System.out.println("Yetersiz stok. Maksimum " + productToAdd.getStock() + " adet ekleyebilirsiniz.");
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            double totalPrice = quantity * productToAdd.getPrice();
+            cart.add(new CartItem(productToAdd.getName(), quantity, totalPrice));
+            System.out.println(productToAdd.getName() + " - Adet: " + quantity + ", Toplam Fiyat: " + totalPrice);
+            productsAdded++;
+            
+        } else if (productsAdded < 2) {
+                System.out.println("En az 2 ürün eklemelisiniz.");
+            }
+            
+        } while (productsAdded < 2 || (productsAdded >= 2 && !answer.equals("H")));
+
+        if (!cart.isEmpty()) {
+            System.out.println("\nSepetiniz:");
+            double cartTotal = 0;
+            for (CartItem item : cart) {
+                System.out.println(item.getName() + " - Adet: " + item.getQuantity() + ", Toplam Fiyat: " + item.getTotalPrice());
+                cartTotal += item.getTotalPrice();
+            }
+            System.out.println("Sepet Toplamı: " + cartTotal);
+        } else {
+            System.out.println("Sepetiniz boş.");
+        }
+        
     }
 }
