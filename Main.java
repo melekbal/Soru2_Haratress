@@ -8,8 +8,13 @@ public class Main {
             System.out.print("Kaç farklı ürün gireceksiniz: ");
             num = scanner.nextInt();
             scanner.nextLine();
-        } while (num < 1);
+            if (num <= 1) {
+                System.out.println("1 adetten fazla ürün girmelisiniz.");
+            }
+        } while (num <= 1);
         
+        ProductManagement productManagement = new ProductManagement();
+        productManagement.addProduct(num);
 
 
     }
