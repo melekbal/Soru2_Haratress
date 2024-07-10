@@ -27,5 +27,9 @@ public class Products {
         return rating;
     }
 
-    
+    public void setPrice(double d) {
+        this.price = d;
+    }
+
+
 }
