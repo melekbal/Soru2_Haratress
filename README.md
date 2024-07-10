@@ -1,6 +1,5 @@
 Bu Java programı, dinamik bir e-ticaret platformu için tasarlanmıştır. Kullanıcı, program aracılığıyla ürünlerin eklenmesi, sıralanması ve sepete eklenmesi işlemlerini gerçekleştirebilir.
 
-Özellikler
 Ürün Ekleme:
 Kullanıcıya kaç adet ürün gireceği sorulur ve her bir ürün için ad, fiyat, stok miktarı ve değerlendirme puanı (5 üzerinden) bilgileri alınır. Fiyat bilgisi 1 ile 100 arasında olmalı, stok miktarı en az 1 olmalı ve ürün adı en fazla 20 karakter uzunluğunda olmalıdır. Eğer bu kurallara uyulmazsa, kullanıcıya uygun giriş yapması için uyarı verilir.
 
