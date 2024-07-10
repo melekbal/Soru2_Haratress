@@ -10,4 +10,22 @@ public class Products {
         this.stock = stock;
         this.rating = rating;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    
 }

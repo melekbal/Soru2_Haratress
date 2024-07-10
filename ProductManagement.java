@@ -61,4 +61,30 @@ public class ProductManagement {
             products.add(new Products(name, price, stock, rating));
         }
     }
+
+    public void sortProducts(String criterion, String order) {
+        if(criterion.equals("name")) {
+            if(order.equals("artan")) {
+                products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+            } else {
+                products.sort((p1, p2) -> p2.getName().compareTo(p1.getName()));
+            }
+        } else if(criterion.equals("stock")) {
+            if(order.equals("artan")) {
+                products.sort((p1, p2) -> p1.getStock() - p2.getStock());
+            } else {
+                products.sort((p1, p2) -> p2.getStock() - p1.getStock());
+            }
+        } else {
+            if(order.equals("artan")) {
+                products.sort((p1, p2) -> Double.compare(p1.getRating(), p2.getRating()));
+            } else {
+                products.sort((p1, p2) -> Double.compare(p2.getRating(), p1.getRating()));
+            }
+        }
+
+        for(Products product : products) {
+            System.out.println(product.getName() + " - Fiyat: " + product.getPrice() + " ,  Stok: " + product.getStock() + " , Değerlendirme: " + product.getRating());
+        }
+    }
 }
