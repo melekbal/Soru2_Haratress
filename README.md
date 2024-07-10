@@ -12,5 +12,4 @@ Sıralama yapıldıktan sonra kullanıcıya sepete ürün ekleyip eklemek isteme
 Sepet Tutarı Hesaplama:
 Kullanıcı ürün eklediğinde, sepetin toplam tutarı şu şekilde hesaplanır: Sepete eklenme sırasına göre ilk ürün fiyatı ikinci üründen fazlaysa, ilk üründen ikinci ürünün birim maliyeti kadar indirim yapılır. Bu indirim mantığı tüm sepet ürünleri için uygulanır.
 
-Geliştirme Ortamı
 Bu program Java dilinde geliştirilmiş olup, geliştirme sürecinde Visual Studio Code kullanılmıştır. Projenin tamamı açık kaynak olarak mevcuttur.
