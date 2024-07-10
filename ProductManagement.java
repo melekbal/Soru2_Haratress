@@ -65,31 +65,33 @@ public class ProductManagement {
     }
 
     public void sortProducts(String criterion, String order) {
+        List<Products> sortedProducts = new ArrayList<>(products); // Yeni bir liste oluşturarak mevcut ürünlerin kopyasını alıyoruz
+    
         if(criterion.equals("name")) {
             if(order.equals("artan")) {
-                products.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
+                sortedProducts.sort((p1, p2) -> p1.getName().compareTo(p2.getName()));
             } else {
-                products.sort((p1, p2) -> p2.getName().compareTo(p1.getName()));
+                sortedProducts.sort((p1, p2) -> p2.getName().compareTo(p1.getName()));
             }
         } else if(criterion.equals("stock")) {
             if(order.equals("artan")) {
-                products.sort((p1, p2) -> p1.getStock() - p2.getStock());
+                sortedProducts.sort((p1, p2) -> p1.getStock() - p2.getStock());
             } else {
-                products.sort((p1, p2) -> p2.getStock() - p1.getStock());
+                sortedProducts.sort((p1, p2) -> p2.getStock() - p1.getStock());
             }
         } else {
             if(order.equals("artan")) {
-                products.sort((p1, p2) -> Double.compare(p1.getRating(), p2.getRating()));
+                sortedProducts.sort((p1, p2) -> Double.compare(p1.getRating(), p2.getRating()));
             } else {
-                products.sort((p1, p2) -> Double.compare(p2.getRating(), p1.getRating()));
+                sortedProducts.sort((p1, p2) -> Double.compare(p2.getRating(), p1.getRating()));
             }
         }
-
-        for(Products product : products) {
+    
+        for(Products product : sortedProducts) {
             System.out.println(product.getName() + " - Fiyat: " + product.getPrice() + " ,  Stok: " + product.getStock() + " , Değerlendirme: " + product.getRating());
         }
     }
-
+    
     public void addToCart() {
         String answer;
         int productsAdded = 0;
@@ -98,54 +100,80 @@ public class ProductManagement {
             System.out.println("\nSepete ürün eklemek ister misiniz? (E/H):");
             answer = scanner.nextLine();
 
-            if (!answer.equals("E") && !answer.equals("H")) {
+            if (!answer.equalsIgnoreCase("E") && !answer.equalsIgnoreCase("H")) {
                 System.out.println("Geçersiz cevap girdiniz. Lütfen tekrar deneyiniz.");
-            } else if (answer.equals("E")) {
-                Products productToAdd = null;
-                while (productToAdd == null) {
-                    System.out.print("Eklemek istediğiniz ürünün adı: ");
-                    String productName = scanner.nextLine();
-    
-                    for (Products product : products) {
-                        if (product.getName().equalsIgnoreCase(productName)) {
-                            productToAdd = product;
-                            break;
-                        }
-                    }
-    
-                    if (productToAdd == null) {
-                        System.out.println("Ürün bulunamadı. Lütfen geçerli bir ürün adı giriniz.");
-                    }
-                }
-    
-                int quantity = 0;
-            while (true) {
-                System.out.print("Eklemek istediğiniz adet: ");
-                quantity = scanner.nextInt();
-                scanner.nextLine(); // Consume newline left-over
+            } else if (answer.equalsIgnoreCase("E")) {
+                addProductToCart();
+                productsAdded++;
+            } else if (productsAdded < 2) {
+                System.out.println("En az 2 ürün eklemelisiniz.");
+            }
 
-                if (quantity <= 0) {
-                    System.out.println("Geçersiz adet girdiniz. Lütfen pozitif bir sayı giriniz.");
-                    continue;
-                } else if (quantity > productToAdd.getStock()) {
-                    System.out.println("Yetersiz stok. Maksimum " + productToAdd.getStock() + " adet ekleyebilirsiniz.");
-                    continue;
-                } else {
+        } while (productsAdded < 2 || (productsAdded >= 2 && !answer.equalsIgnoreCase("H")));
+
+        displayCart();
+
+    }
+
+    private void addProductToCart() {
+        Products productToAdd = null;
+        while (productToAdd == null) {
+            System.out.print("Eklemek istediğiniz ürünün adı: ");
+            String productName = scanner.nextLine();
+
+            for (Products product : products) {
+                if (product.getName().equalsIgnoreCase(productName)) {
+                    productToAdd = product;
                     break;
                 }
             }
 
-            double totalPrice = quantity * productToAdd.getPrice();
-            cart.add(new CartItem(productToAdd.getName(), quantity, totalPrice));
-            System.out.println(productToAdd.getName() + " - Adet: " + quantity + ", Toplam Fiyat: " + totalPrice);
-            productsAdded++;
-            
-        } else if (productsAdded < 2) {
-                System.out.println("En az 2 ürün eklemelisiniz.");
+            if (productToAdd == null) {
+                System.out.println("Ürün bulunamadı. Lütfen geçerli bir ürün adı giriniz.");
             }
-            
-        } while (productsAdded < 2 || (productsAdded >= 2 && !answer.equals("H")));
+        }
 
+        int quantity = 0;
+        while (true) {
+            System.out.print("Eklemek istediğiniz adet: ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Geçersiz giriş. Lütfen geçerli bir adet giriniz.");
+                scanner.next(); // Consume the invalid input
+            }
+            quantity = scanner.nextInt();
+            scanner.nextLine(); // Consume newline left-over
+
+            if (quantity <= 0) {
+                System.out.println("Geçersiz adet girdiniz. Lütfen pozitif bir sayı giriniz.");
+                continue;
+            } else if (quantity > productToAdd.getStock()) {
+                System.out.println("Yetersiz stok. Maksimum " + productToAdd.getStock() + " adet ekleyebilirsiniz.");
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        double totalPrice = quantity * productToAdd.getPrice();
+        cart.add(new CartItem(productToAdd.getName(), quantity, totalPrice));
+
+        System.out.println(quantity + " adet " + productToAdd.getName() + " sepete eklendi.");
+
+        // Apply discount logic if applicable
+        if (cart.size() >= 2) {
+            Products firstProduct = products.get(0);
+            Products secondProduct = products.get(1);
+
+            CartItem firstItem = cart.get(0);
+
+            if (firstProduct.getPrice() > secondProduct.getPrice()) {
+                double discount = secondProduct.getPrice();
+                firstItem.setTotalPrice((firstProduct.getPrice() - discount) * firstItem.getQuantity());
+            }
+        }
+    }
+
+    private void displayCart() {
         if (!cart.isEmpty()) {
             System.out.println("\nSepetiniz:");
             double cartTotal = 0;
@@ -157,6 +185,5 @@ public class ProductManagement {
         } else {
             System.out.println("Sepetiniz boş.");
         }
-        
     }
 }

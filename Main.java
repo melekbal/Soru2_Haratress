@@ -41,7 +41,8 @@ public class Main {
 
         System.err.println("\nSıralanmış Ürünler:");
         productManagement.sortProducts(criterion, order);
-   
+        
+        // Sepete ekleme ve sepet gösterimi işlemleri
         productManagement.addToCart();
     }
 }
